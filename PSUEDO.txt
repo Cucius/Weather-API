@@ -1,0 +1,11 @@
+User Story-Weather outlook for multiple cities
+	-Input for city 
+
+		-shows current and future conditions
+		-add city to the search history
+		-icons for weather,the temp, the humidity ,the wind speed, and the UV index
+	-UV index
+		-green for favorable
+		-yellow for moderate
+		-red for severe
+	-5-day forecast
