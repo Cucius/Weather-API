@@ -1,0 +1,27 @@
+:root {
+}
+
+html {
+  box-sizing: border-box;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+h1 {
+  display: block;
+}
+
+#searchSection {
+  margin: 10px;
+  height: min-content;
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+}
+
+button {
+  padding: 2px 70px;
+}
