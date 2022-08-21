@@ -25,3 +25,7 @@ h1 {
 button {
   padding: 2px 70px;
 }
+
+.card-img-top {
+  width: fit-content;
+}
