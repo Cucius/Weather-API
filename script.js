@@ -1,5 +1,6 @@
 var weatherSection = document.querySelector("#weatherSection");
 var count = 0;
+var uv = localStorage.getItem("uv");
 //object to show weather
 var weather = {
   APIkey: "501721a232530766e41f1ad70cfed92b",
@@ -51,8 +52,21 @@ var weather = {
       newWindSpeed.setAttribute("class", "wind-speed");
       weatherCardBody.append(newWindSpeed);
 
+      //displays uv and color for severity
       var newUvIndex = document.createElement("p");
+      if (uv <= 3) {
+        newUvIndex.setAttribute("style", "background-color: #558B2F");
+      } else if (uv > 3 && uv < 6) {
+        newUvIndex.setAttribute("style", "background-color: #F9A825");
+      } else if (uv > 6 && uv < 8) {
+        newUvIndex.setAttribute("style", "background-color: #EF6C00");
+      } else if (uv > 8 && uv < 11) {
+        newUvIndex.setAttribute("style", "background-color: #B71C1C");
+      } else if (uv > 11) {
+        newUvIndex.setAttribute("style", "background-color: #6A1B9A");
+      }
       newUvIndex.setAttribute("class", "uvIndex");
+      newUvIndex.setAttribute("style", "background-color: grey");
       weatherCardBody.append(newUvIndex);
 
       // document.body.children["appBody"].children["weatherSection"].createElement("div");
@@ -84,24 +98,60 @@ var weather = {
 
       newWindSpeed.innerText = "Wind Speed : " + speed + "mph";
 
-      newUvIndex.innerText = "UV : ";
+      newUvIndex.innerText = "UV Index : " + uv;
     }
   },
   search: function () {
     weather.fetchWeather(document.querySelector("#cityInput").value);
   },
 };
+
+var uvIndex = {
+  getUVIndex: function () {
+    //   var lat = $("#lat").val();
+    //   var lng = $("#lng").val();
+    var latitude = localStorage.getItem("latitude");
+    var longitude = localStorage.getItem("longitude");
+    console.log(latitude, longitude);
+
+    $.ajax({
+      type: "GET",
+      dataType: "json",
+      beforeSend: function (request) {
+        request.setRequestHeader("x-access-token", "fa2b78e8d5d381bc76d786acda45e790");
+      },
+      url: "https://api.openuv.io/api/v1/uv?lat=" + latitude + "&lng=" + longitude,
+      success: function (response) {
+        //handle successful response
+        if (response === 200);
+        console.log("success");
+      },
+      error: function (response) {
+        // handle error response
+        if (response !== 200);
+        console.log("Fail");
+        localStorage.setItem("uv", "Not Available");
+      },
+    }).then((data) => uvIndex.displayUVIndex(data));
+  },
+  displayUVIndex: function (data) {
+    var dataResult = data.result;
+    var { uv } = dataResult;
+    localStorage.setItem("uv", uv);
+  },
+  //   var { uv } = data.result;
+};
 //search button from users input
 document.querySelector(".container button").addEventListener("click", function () {
   weather.search();
-  getUVIndex();
+  uvIndex.getUVIndex();
   clear();
 });
 //Return keypress starts search function
 document.querySelector("#cityInput").addEventListener("keydown", function (event) {
   if (event.key === "Enter") {
     weather.search();
-    getUVIndex();
+    uvIndex.getUVIndex();
     clear();
   }
 });
@@ -114,34 +164,6 @@ function clear() {
   }
 }
 
-function getUVIndex() {
-  //   var lat = $("#lat").val();
-  //   var lng = $("#lng").val();
-  var latitude = localStorage.getItem("latitude");
-  var longitude = localStorage.getItem("longitude");
-  console.log(latitude, longitude);
-
-  $.ajax({
-    type: "GET",
-    dataType: "json",
-    beforeSend: function (request) {
-      request.setRequestHeader("x-access-token", "fa2b78e8d5d381bc76d786acda45e790");
-    },
-    url: "https://api.openuv.io/api/v1/uv?lat=" + latitude + "&lng=" + longitude,
-    success: function (response) {
-      //handle successful response
-      if (response === 200);
-      console.log("success");
-      $.then((response) => response.json());
-      $.then((data) => console.log(data));
-    },
-    error: function (response) {
-      // handle error response
-      if (response !== 200);
-      console.log("Fail");
-    },
-  });
-}
 // var uv = {
 //   uvAPIkey: "fa2b78e8d5d381bc76d786acda45e790",
 //   //Call weather based on city defined
