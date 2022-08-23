@@ -206,7 +206,7 @@ var weather = {
     for (var i = 0; i < cities.length; i++) {
       city.push(cities[i]);
     }
-    localStorage.setItem("cities", city);
+    localStorage.setItem("cities", city.join(""));
   },
 };
 
